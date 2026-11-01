@@ -14,7 +14,7 @@ public class OrdenDAO {
         this.conexionBD = new Conexion();
     }
 
-    // Comprueba inmutabilidad: las órdenes FINALIZADAS o CANCELADAS no se pueden modificar[cite: 3].
+    //Comprobacion estado de orden
     public boolean esInmutable(int idOrden, Connection con) throws SQLException {
         String sql = "SELECT estado_orden FROM orden WHERE id_orden = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -34,7 +34,7 @@ public class OrdenDAO {
         return false;
     }
 
-    // 1. Crear Orden (Estado inicial: PENDIENTE)[cite: 3]
+    //Crear Orden
     public boolean crearOrden(String noPlaca, int idMecanico) {
         String sql = "INSERT INTO orden (estado_orden, fecha_entrada, id_Mecanico, No_Placa) VALUES ('PENDIENTE', CURRENT_DATE(), ?, ?)";
         try (Connection con = conexionBD.getConnection();
@@ -59,7 +59,7 @@ public class OrdenDAO {
         return false;
     }
 
-    // 2. Iniciar Reparación (Pasa a EN PROCESO)[cite: 3]
+    //Iniciar Reparación
     public boolean iniciarReparacion(int idOrden) {
         String sql = "UPDATE orden SET estado_orden = 'EN PROCESO' WHERE id_orden = ? AND estado_orden = 'PENDIENTE'";
         try (Connection con = conexionBD.getConnection()) {
@@ -81,7 +81,7 @@ public class OrdenDAO {
         return false;
     }
 
-    // 3. Registrar Servicio a Orden[cite: 3]
+    //Registrar Servicio a Orden
     public boolean registrarServicio(int idOrden, int idServicio) {
         String sqlValor = "SELECT valor_Servicio FROM servicios WHERE id_Servicios = ?";
         String sqlInsert = "INSERT INTO orden_servicios (servicio_estado, id_Servicios, id_Orden, servicio_valor) VALUES ('ASIGNADO', ?, ?, ?)";
@@ -152,14 +152,14 @@ public class OrdenDAO {
                 psIns.executeUpdate();
             }
 
-            // Descontar del inventario
+            //Descontar del inventario
             try (PreparedStatement psUpd = con.prepareStatement(sqlDescontarStock)) {
                 psUpd.setInt(1, cantidad);
                 psUpd.setInt(2, idBodega);
                 psUpd.executeUpdate();
             }
 
-            con.commit(); // CONFIRMAR TRANSACCIÓN[cite: 3]
+            con.commit();
             System.out.println("Repuesto asignado y stock descontado exitosamente.");
             return true;
 
@@ -300,7 +300,7 @@ public class OrdenDAO {
         return false;
     }
 
-    // 7. Cancelar Orden (Reintegra repuestos en una única transacción)[cite: 3]
+    //Cancelar Orden
     public boolean cancelarOrden(int idOrden) {
         String sqlGetRepuestos = "SELECT id_Bodega, repuesto_cantidad FROM orden_repuestos WHERE id_Orden = ?";
         String sqlRestaurarStock = "UPDATE bodega SET existencias = existencias + ? WHERE id_Bodega = ?";
