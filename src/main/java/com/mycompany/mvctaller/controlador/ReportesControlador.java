@@ -18,12 +18,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Módulo de reportes: pantallas (reportes.html) y descargas PDF.
- */
 @Controller
 public class ReportesControlador {
-
     private final ReportesPDF reportesPDF;
     private final CrearPDF crearPDF;
 
@@ -32,22 +28,14 @@ public class ReportesControlador {
         this.crearPDF = crearPDF;
     }
 
-    /** Datos que necesita siempre la plantilla y nombre de la vista. */
     private String vista(Model model) {
         model.addAttribute("estados", reportesPDF.obtenerEstadosDisponibles());
         return "reportes";
     }
-
-    // =====================================================================
-    //  PANTALLAS
-    // =====================================================================
-
-    @GetMapping("/reportes")
+@GetMapping("/reportes")
     public String inicio(Model model) {
         return vista(model);
     }
-
-    // 1. Órdenes por estado (TODOS = una sección por cada estado)
     @GetMapping("/reportes/ordenes-estado")
     public String ordenesPorEstado(@RequestParam(defaultValue = "TODOS") String estado, Model model) {
         model.addAttribute("estadoSeleccionado", estado);
@@ -61,24 +49,18 @@ public class ReportesControlador {
         }
         return vista(model);
     }
-
-    // 2. Historial por placa
     @GetMapping("/reportes/historial-placa")
     public String historialPorPlaca(@RequestParam String noPlaca, Model model) {
         model.addAttribute("lista", reportesPDF.obtenerHistorialPorPlaca(noPlaca));
         model.addAttribute("tipoReporte", "Historial de reparaciones - Placa " + noPlaca);
         return vista(model);
     }
-
-    // 3. Stock bajo
     @GetMapping("/reportes/stock-bajo")
     public String stockBajo(@RequestParam(defaultValue = "5") int limite, Model model) {
         model.addAttribute("lista", reportesPDF.obtenerRepuestosStockBajo(limite));
         model.addAttribute("tipoReporte", "Repuestos con existencia menor o igual a " + limite);
         return vista(model);
     }
-
-    // 4. Órdenes por mecánico y estado
     @GetMapping("/reportes/ordenes-mecanico")
     public String ordenesPorMecanico(@RequestParam int idMecanico,
                                      @RequestParam(defaultValue = "TODOS") String estado,
@@ -88,7 +70,6 @@ public class ReportesControlador {
         return vista(model);
     }
 
-    // 5. Ingresos por rango de fechas
     @GetMapping("/reportes/ingresos-fechas")
     public String ingresosPorFechas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
@@ -105,10 +86,6 @@ public class ReportesControlador {
         model.addAttribute("tipoReporte", "Ingresos del " + fechaInicio + " al " + fechaFin);
         return vista(model);
     }
-
-    // =====================================================================
-    //  DESCARGAS PDF
-    // =====================================================================
 
     @GetMapping("/reportes/pdf/estado")
     public ResponseEntity<byte[]> pdfPorEstado(@RequestParam(defaultValue = "TODOS") String estado) {
@@ -168,10 +145,6 @@ public class ReportesControlador {
                 "Total de ingresos: Q " + total.setScale(2, RoundingMode.HALF_UP).toPlainString());
         return respuestaPdf(contenido, "ingresos");
     }
-
-    // =====================================================================
-    //  UTILIDADES
-    // =====================================================================
 
     private String tituloMecanico(int idMecanico, String estado) {
         return "Órdenes del mecánico #" + idMecanico +

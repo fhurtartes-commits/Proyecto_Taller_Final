@@ -35,7 +35,6 @@ public class CrearPDF {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    /** PDF con una sola tabla. 'pie' es opcional (por ejemplo, un total). */
     public byte[] generarTabla(String titulo, List<Map<String, Object>> filas, String pie) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Document doc = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
@@ -58,8 +57,6 @@ public class CrearPDF {
 
         return out.toByteArray();
     }
-
-    /** PDF con una sección (título + tabla) por cada clave del mapa, por ejemplo por estado. */
     public byte[] generarSecciones(String titulo, Map<String, List<Map<String, Object>>> grupos) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Document doc = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
@@ -90,15 +87,12 @@ public class CrearPDF {
         return out.toByteArray();
     }
 
-    // ---------- Utilidades ----------
-
     private void agregarEncabezado(Document doc, String titulo) throws DocumentException {
         doc.add(new Paragraph(titulo, F_TITULO));
         Paragraph sub = new Paragraph("Sistema Taller Mecánico - Generado: " + LocalDateTime.now().format(FORMATO_FECHA), F_SUBTITULO);
         sub.setSpacingAfter(8);
         doc.add(sub);
     }
-
     private void agregarTabla(Document doc, List<Map<String, Object>> filas) throws DocumentException {
         if (filas == null || filas.isEmpty()) {
             Paragraph vacio = new Paragraph("No hay registros.", F_TEXTO);

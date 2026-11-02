@@ -9,67 +9,31 @@
 </head>
 <body class="bg-light">
 
-    <!-- Navegación Superior -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-tools me-2"></i>Sistema Taller Mecánico
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold" th:href="@{/ordenes}">
-                            <i class="bi bi-file-earmark-text me-1"></i>Gestión de Órdenes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active fw-semibold" th:href="@{/reportes}">
-                            <i class="bi bi-graph-up-arrow me-1"></i>Módulo de Reportes
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <div class="container pb-5">
 
-        <!-- Encabezado -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold text-dark mb-0">Módulo de Reportes y Consultas</h2>
-                <p class="text-muted small mb-0">Generación de datos en pantalla y descargas en formato PDF.</p>
+                <h2 class="fw-bold text-dark mb-0">Reportes y Consultas</h2>
             </div>
         </div>
 
-        <!-- Alertas -->
         <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <span th:text="${error}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
-        <!-- Formularios de Consulta -->
         <div class="row g-4 mb-4">
 
-            <!-- 1. Órdenes por Estado -->
             <div class="col-md-6 col-lg-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-primary text-white fw-bold py-3">
-                        <i class="bi bi-funnel me-2"></i>1. Órdenes por Estado
+                        <i class="bi bi-funnel me-2"></i>Órdenes por Estado
                     </div>
                     <div class="card-body d-flex flex-column justify-content-between">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Haga clic en un estado para ver las órdenes</label>
+                            <label class="form-label fw-semibold">Haga clic en estado para ver las órdenes</label>
                             <div class="list-group">
-                            <a th:href="@{/reportes/ordenes-estado(estado='TODOS')}"
-                               class="list-group-item list-group-item-action fw-semibold"
-                               th:classappend="${estadoSeleccionado == 'TODOS'} ? 'active'">
-                                <i class="bi bi-collection me-2"></i>Todos
-                            </a>
                             <a th:href="@{/reportes/ordenes-estado(estado='EN PROCESO')}"
                                class="list-group-item list-group-item-action fw-semibold"
                                th:classappend="${estadoSeleccionado == 'EN PROCESO'} ? 'active'">
@@ -101,11 +65,10 @@
                 </div>
             </div>
 
-            <!-- 2. Historial por Placa -->
             <div class="col-md-6 col-lg-4">
                 <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-secondary text-white fw-bold py-3">
-                        <i class="bi bi-car-front me-2"></i>2. Historial por Placa
+                    <div class="card-header bg-primary text-white fw-bold py-3">
+                        <i class="bi bi-funnel me-2"></i>Historial por Placa
                     </div>
                     <div class="card-body d-flex flex-column justify-content-between">
                         <form th:action="@{/reportes/historial-placa}" method="get">
@@ -117,7 +80,7 @@
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-secondary w-100 fw-semibold">
+                                <button type="submit" class="btn btn-success w-100 fw-semibold">
                                     <i class="bi bi-search me-1"></i>Ver
                                 </button>
                                 <button type="submit" th:formaction="@{/reportes/pdf/placa}" class="btn btn-outline-danger w-100 fw-semibold">
@@ -129,11 +92,10 @@
                 </div>
             </div>
 
-            <!-- 3. Stock Bajo -->
             <div class="col-md-6 col-lg-4">
                 <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-warning text-dark fw-bold py-3">
-                        <i class="bi bi-box-seam me-2"></i>3. Stock Bajo (Bodega)
+                    <div class="card-header bg-primary text-white fw-bold py-3">
+                        <i class="bi bi-funnel me-2"></i>Stock Bajo
                     </div>
                     <div class="card-body d-flex flex-column justify-content-between">
                         <form th:action="@{/reportes/stock-bajo}" method="get">
@@ -142,7 +104,7 @@
                                 <input type="number" name="limite" class="form-control" value="5" min="1" required>
                             </div>
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-warning text-dark w-100 fw-semibold">
+                                <button type="submit" class="btn btn-success w-100 fw-semibold">
                                     <i class="bi bi-search me-1"></i>Ver
                                 </button>
                                 <button type="submit" th:formaction="@{/reportes/pdf/stock-bajo}" class="btn btn-outline-danger w-100 fw-semibold">
@@ -154,11 +116,10 @@
                 </div>
             </div>
 
-            <!-- 4. Órdenes por Mecánico y Estado -->
             <div class="col-md-6 col-lg-6">
                 <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-info text-dark fw-bold py-3">
-                        <i class="bi bi-person-badge me-2"></i>4. Órdenes por Mecánico y Estado
+                    <div class="card-header bg-primary text-white fw-bold py-3">
+                        <i class="bi bi-funnel me-2"></i>Órdenes por Mecánico y Estado
                     </div>
                     <div class="card-body">
                         <form th:action="@{/reportes/ordenes-mecanico}" method="get">
@@ -179,7 +140,7 @@
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-info text-dark w-100 fw-semibold">
+                                <button type="submit" class="btn btn-success w-100 fw-semibold">
                                     <i class="bi bi-search me-1"></i>Ver
                                 </button>
                                 <button type="submit" th:formaction="@{/reportes/pdf/mecanico}" class="btn btn-outline-danger w-100 fw-semibold">
@@ -191,11 +152,10 @@
                 </div>
             </div>
 
-            <!-- 5. Ingresos por Rango de Fechas -->
             <div class="col-md-12 col-lg-6">
                 <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-success text-white fw-bold py-3">
-                        <i class="bi bi-cash-stack me-2"></i>5. Ingresos por Rango de Fechas
+                    <div class="card-header bg-primary text-white fw-bold py-3">
+                        <i class="bi bi-funnel me-2"></i>Ingresos por Rango de Fechas
                     </div>
                     <div class="card-body">
                         <form th:action="@{/reportes/ingresos-fechas}" method="get">
@@ -224,7 +184,6 @@
 
         </div>
 
-        <!-- Resultados agrupados: una sección por estado -->
         <div th:if="${grupos != null}" class="mt-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0">
@@ -261,7 +220,6 @@
             </div>
         </div>
 
-        <!-- Tabla de Resultados -->
         <div th:if="${lista != null}" class="card border-0 shadow-sm mt-4">
             <div class="card-header bg-dark text-white fw-bold py-3 d-flex justify-content-between align-items-center">
                 <span>
