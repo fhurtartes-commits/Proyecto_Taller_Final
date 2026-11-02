@@ -1,4 +1,3 @@
-
 package com.mycompany.mvctaller.controlador;
 
 import com.mycompany.mvctaller.dao.OrdenDAO;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+prueba
 
 @Controller
 @RequestMapping("/ordenes")
