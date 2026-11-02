@@ -2,14 +2,15 @@ package com.mycompany.mvctaller.dao;
 
 import com.mycompany.mvctaller.config.Conexion;
 import com.mycompany.mvctaller.modelo.Orden;
-
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.sql.*;
-
+@Repository
 public class OrdenDAO {
 
     private final Conexion conexionBD;
-
+@Autowired
     public OrdenDAO() {
         this.conexionBD = new Conexion();
     }

@@ -1,16 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.mycompany.mvctaller;
 
-/**
- *
- * @author FamHurtarteS
- */
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+
 public class MVCTaller {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+  SpringApplication.run(MVCTaller.class, args);
     }
 }

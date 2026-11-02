@@ -22,5 +22,9 @@ private int idCliente;
     public void setNit(String nit) {this.nit = nit;}
     
     public String getTelefono() {return telefono;}
-    public void setTelefono(String telefono) {this.telefono = telefono;}    
+    public void setTelefono(String telefono) {this.telefono = telefono;}
+    
+    public int getId() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Reportes - Sistema Taller</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- Navegación Superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-tools me-2"></i>Sistema Taller Mecánico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" th:href="@{/ordenes}">
+                            <i class="bi bi-file-earmark-text me-1"></i>Gestión de Órdenes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-semibold" th:href="@{/reportes}">
+                            <i class="bi bi-graph-up-arrow me-1"></i>Módulo de Reportes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Módulo de Reportes y Consultas</h2>
+                <p class="text-muted small mb-0">Generación de datos en pantalla y descargas en formato PDF.</p>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Formularios de Consulta -->
+        <div class="row g-4 mb-4">
+
+            <!-- 1. Órdenes por Estado -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-primary text-white fw-bold py-3">
+                        <i class="bi bi-funnel me-2"></i>1. Órdenes por Estado
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Haga clic en un estado para ver las órdenes</label>
+                            <div class="list-group">
+                            <a th:href="@{/reportes/ordenes-estado(estado='TODOS')}"
+                               class="list-group-item list-group-item-action fw-semibold"
+                               th:classappend="${estadoSeleccionado == 'TODOS'} ? 'active'">
+                                <i class="bi bi-collection me-2"></i>Todos
+                            </a>
+                            <a th:href="@{/reportes/ordenes-estado(estado='EN PROCESO')}"
+                               class="list-group-item list-group-item-action fw-semibold"
+                               th:classappend="${estadoSeleccionado == 'EN PROCESO'} ? 'active'">
+                                <i class="bi bi-gear me-2"></i>En proceso
+                            </a>
+                            <a th:href="@{/reportes/ordenes-estado(estado='PENDIENTE')}"
+                               class="list-group-item list-group-item-action fw-semibold"
+                               th:classappend="${estadoSeleccionado == 'PENDIENTE'} ? 'active'">
+                                <i class="bi bi-hourglass-split me-2"></i>Pendientes
+                            </a>
+                            <a th:href="@{/reportes/ordenes-estado(estado='FINALIZADA')}"
+                               class="list-group-item list-group-item-action fw-semibold"
+                               th:classappend="${estadoSeleccionado == 'FINALIZADA'} ? 'active'">
+                                <i class="bi bi-check-circle me-2"></i>Finalizados
+                            </a>
+                            <a th:href="@{/reportes/ordenes-estado(estado='CANCELADA')}"
+                               class="list-group-item list-group-item-action fw-semibold"
+                               th:classappend="${estadoSeleccionado == 'CANCELADA'} ? 'active'">
+                                <i class="bi bi-x-circle me-2"></i>Cancelados
+                            </a>
+                            </div>
+                        </div>
+                        <a th:with="est=${estadoSeleccionado != null ? estadoSeleccionado : 'TODOS'}"
+                           th:href="@{/reportes/pdf/estado(estado=${est})}"
+                           class="btn btn-outline-danger w-100 fw-semibold">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Descargar PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Historial por Placa -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-secondary text-white fw-bold py-3">
+                        <i class="bi bi-car-front me-2"></i>2. Historial por Placa
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <form th:action="@{/reportes/historial-placa}" method="get">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Número de Placa</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="text" name="noPlaca" class="form-control" placeholder="Ej. P123ABC" required>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-secondary w-100 fw-semibold">
+                                    <i class="bi bi-search me-1"></i>Ver
+                                </button>
+                                <button type="submit" th:formaction="@{/reportes/pdf/placa}" class="btn btn-outline-danger w-100 fw-semibold">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Stock Bajo -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-warning text-dark fw-bold py-3">
+                        <i class="bi bi-box-seam me-2"></i>3. Stock Bajo (Bodega)
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <form th:action="@{/reportes/stock-bajo}" method="get">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Límite de Existencias</label>
+                                <input type="number" name="limite" class="form-control" value="5" min="1" required>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-warning text-dark w-100 fw-semibold">
+                                    <i class="bi bi-search me-1"></i>Ver
+                                </button>
+                                <button type="submit" th:formaction="@{/reportes/pdf/stock-bajo}" class="btn btn-outline-danger w-100 fw-semibold">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Órdenes por Mecánico y Estado -->
+            <div class="col-md-6 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-info text-dark fw-bold py-3">
+                        <i class="bi bi-person-badge me-2"></i>4. Órdenes por Mecánico y Estado
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/reportes/ordenes-mecanico}" method="get">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">ID Mecánico</label>
+                                    <input type="number" name="idMecanico" class="form-control" required placeholder="Ej. 1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Estado</label>
+                                    <select name="estado" class="form-select" required>
+                                        <option value="TODOS" selected>Todos</option>
+                                        <option value="EN PROCESO">En proceso</option>
+                                        <option value="PENDIENTE">Pendientes</option>
+                                        <option value="FINALIZADA">Finalizados</option>
+                                        <option value="CANCELADA">Cancelados</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-info text-dark w-100 fw-semibold">
+                                    <i class="bi bi-search me-1"></i>Ver
+                                </button>
+                                <button type="submit" th:formaction="@{/reportes/pdf/mecanico}" class="btn btn-outline-danger w-100 fw-semibold">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Ingresos por Rango de Fechas -->
+            <div class="col-md-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-success text-white fw-bold py-3">
+                        <i class="bi bi-cash-stack me-2"></i>5. Ingresos por Rango de Fechas
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/reportes/ingresos-fechas}" method="get">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Fecha Inicio</label>
+                                    <input type="date" name="fechaInicio" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Fecha Fin</label>
+                                    <input type="date" name="fechaFin" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success w-100 fw-semibold">
+                                    <i class="bi bi-search me-1"></i>Ver
+                                </button>
+                                <button type="submit" th:formaction="@{/reportes/pdf/ingresos}" class="btn btn-outline-danger w-100 fw-semibold">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Resultados agrupados: una sección por estado -->
+        <div th:if="${grupos != null}" class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">
+                    <i class="bi bi-collection me-2"></i><span th:text="${tipoReporte}">Órdenes por estado</span>
+                </h5>
+                <span class="badge bg-dark" th:text="${#lists.size(grupos.keySet())} + ' secciones'"></span>
+            </div>
+
+            <div th:each="g : ${grupos}" class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-dark text-white fw-bold py-3 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-flag-fill me-2"></i><span th:text="${g.key}"></span></span>
+                    <span class="badge bg-primary" th:text="${#lists.size(g.value)} + ' órdenes'"></span>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(g.value)}" class="p-4 text-center text-muted">
+                        <i class="bi bi-inbox fs-4 text-secondary d-block mb-1"></i>
+                        No hay órdenes en este estado.
+                    </div>
+                    <div th:if="${!#lists.isEmpty(g.value)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th th:each="key : ${g.value[0].keySet()}" th:text="${key}" class="text-uppercase small fw-bold text-muted"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="fila : ${g.value}">
+                                    <td th:each="key : ${g.value[0].keySet()}" th:text="${fila.get(key)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Resultados -->
+        <div th:if="${lista != null}" class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-dark text-white fw-bold py-3 d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="bi bi-table me-2"></i><span th:text="${tipoReporte}"></span>
+                </span>
+                <span class="badge bg-primary" th:text="${#lists.size(lista)} + ' registros'"></span>
+            </div>
+            <div class="card-body p-0">
+
+                <div th:if="${#lists.isEmpty(lista)}" class="p-4 text-center text-muted">
+                    <i class="bi bi-inbox fs-2 text-secondary d-block mb-2"></i>
+                    No se encontraron registros para la consulta seleccionada.
+                </div>
+
+                <div th:if="${!#lists.isEmpty(lista)}" class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th th:each="key : ${lista[0].keySet()}" th:text="${key}" class="text-uppercase small fw-bold text-muted"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fila : ${lista}">
+                                <td th:each="key : ${lista[0].keySet()}" th:text="${fila.get(key)}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
