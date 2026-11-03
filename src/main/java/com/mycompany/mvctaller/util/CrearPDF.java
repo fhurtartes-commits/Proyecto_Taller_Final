@@ -87,15 +87,13 @@ public class CrearPDF {
 
         return out.toByteArray();
     }
-
-
+  
     private void agregarEncabezado(Document doc, String titulo) throws DocumentException {
         doc.add(new Paragraph(titulo, F_TITULO));
         Paragraph sub = new Paragraph("Sistema Taller Mecánico - Generado: " + LocalDateTime.now().format(FORMATO_FECHA), F_SUBTITULO);
         sub.setSpacingAfter(8);
         doc.add(sub);
     }
-
     private void agregarTabla(Document doc, List<Map<String, Object>> filas) throws DocumentException {
         if (filas == null || filas.isEmpty()) {
             Paragraph vacio = new Paragraph("No hay registros.", F_TEXTO);

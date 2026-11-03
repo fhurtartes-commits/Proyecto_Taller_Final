@@ -158,7 +158,7 @@ public class OrdenDAO {
 
         } catch (SQLException e) {
             if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); } // ROLLBACK EN CASO DE FALLO[cite: 3]
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
             System.err.println("Transacción fallida (Rollback ejecutado): " + e.getMessage());
         } finally {

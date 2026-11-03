@@ -20,7 +20,6 @@ import java.util.Map;
 
 @Controller
 public class ReportesControlador {
-
     private final ReportesPDF reportesPDF;
     private final CrearPDF crearPDF;
 
@@ -29,7 +28,6 @@ public class ReportesControlador {
         this.crearPDF = crearPDF;
     }
 
-    /** Datos que necesita siempre la plantilla y nombre de la vista. */
     private String vista(Model model) {
         model.addAttribute("estados", reportesPDF.obtenerEstadosDisponibles());
         return "reportes";
