@@ -26,7 +26,7 @@ public class VehiculosDAO {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.err.println("Error al insertar el vehículo: " + e.getMessage());
+            System.err.println("Error al insertar el vehículo (posible placa duplicada o cliente inexistente): " + e.getMessage());
             return false;
         }
     }
@@ -50,7 +50,6 @@ public class VehiculosDAO {
         }
     }
 
-    // Regla: No se eliminan vehículos con órdenes registradas
     public boolean eliminar(String noPlaca) {
         String sqlCheck = "SELECT COUNT(*) FROM orden WHERE No_Placa = ?";
         String sqlDelete = "DELETE FROM vehiculo WHERE No_Placa = ?";

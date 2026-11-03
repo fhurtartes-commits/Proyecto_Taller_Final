@@ -21,11 +21,9 @@ public class ReportesPDF {
 
     private final Conexion conexionBD = new Conexion();
 
-    /** Estados reales que guarda OrdenDAO, en el orden en que se muestran las secciones. */
     private static final List<String> ESTADOS_ORDEN =
             Arrays.asList("PENDIENTE", "EN PROCESO", "FINALIZADA", "CANCELADA");
 
-    /** Normaliza un estado: sin espacios sobrantes, en mayúsculas y sin guion bajo. */
     private String normalizarEstado(String estado) {
         if (estado == null || estado.trim().isEmpty()) return "SIN ESTADO";
         return estado.trim().toUpperCase().replace('_', ' ');
@@ -35,14 +33,11 @@ public class ReportesPDF {
             "SELECT id_orden, estado_orden, fecha_entrada, fecha_salida, " +
             "id_Mecanico, No_Placa, costo_total FROM orden";
 
-    // ---------- Utilidades ----------
 
-    /** Un estado es válido solo si trae texto (ya no existe el modo "todos"). */
     private boolean estadoVacio(String estado) {
         return estado == null || estado.trim().isEmpty();
     }
 
-    /** Convierte la fila actual del ResultSet en un Map (conserva el orden de columnas). */
     private Map<String, Object> mapearOrden(ResultSet rs) throws SQLException {
         Map<String, Object> fila = new LinkedHashMap<>();
         fila.put("id_orden", rs.getInt("id_orden"));
@@ -55,8 +50,6 @@ public class ReportesPDF {
         return fila;
     }
 
-    // ---------- Estados disponibles (para llenar los combos) ----------
-    // Siempre incluye los 4 estados del taller en orden, más cualquier otro que exista en la BD.
 
     public List<String> obtenerEstadosDisponibles() {
         Set<String> estados = new LinkedHashSet<>(ESTADOS_ORDEN);
@@ -78,7 +71,6 @@ public class ReportesPDF {
         return new ArrayList<>(estados);
     }
 
-    // 1. Órdenes por un estado específico
     public List<Map<String, Object>> obtenerOrdenesPorEstado(String estado) {
 
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -107,7 +99,6 @@ public class ReportesPDF {
         return lista;
     }
 
-    // 1a. Un solo estado, devuelto como una sección (mismo formato que el reporte agrupado)
     public Map<String, List<Map<String, Object>>> obtenerSeccionPorEstado(String estado) {
         Map<String, List<Map<String, Object>>> grupos = new LinkedHashMap<>();
         if (!estadoVacio(estado)) {
@@ -116,8 +107,6 @@ public class ReportesPDF {
         return grupos;
     }
 
-    // 1b. TODAS las órdenes agrupadas por estado (una sección por cada estado)
-    // Las 4 secciones (PENDIENTE, EN PROCESO, FINALIZADA, CANCELADA) siempre aparecen, aunque estén vacías.
     public Map<String, List<Map<String, Object>>> obtenerOrdenesAgrupadasPorEstado() {
 
         Map<String, List<Map<String, Object>>> grupos = new LinkedHashMap<>();
@@ -144,7 +133,6 @@ public class ReportesPDF {
         return grupos;
     }
 
-    // 2. Historial de reparaciones por vehículo (placa)
     public List<Map<String, Object>> obtenerHistorialPorPlaca(String noPlaca) {
 
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -170,7 +158,6 @@ public class ReportesPDF {
         return lista;
     }
 
-    // 3. Repuestos con existencia menor o igual al límite
     public List<Map<String, Object>> obtenerRepuestosStockBajo(int limite) {
 
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -200,7 +187,6 @@ public class ReportesPDF {
         return lista;
     }
 
-    // 4. Órdenes por mecánico y un estado específico
     public List<Map<String, Object>> obtenerOrdenesPorMecanicoYEstado(int idMecanico, String estado) {
 
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -235,7 +221,6 @@ public class ReportesPDF {
         return lista;
     }
 
-    // 5. Ingresos por reparaciones en un rango de fechas
     public List<Map<String, Object>> obtenerIngresosPorFechas(Date fechaInicio, Date fechaFin) {
 
         List<Map<String, Object>> lista = new ArrayList<>();

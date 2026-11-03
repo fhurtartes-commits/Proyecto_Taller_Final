@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Catálogo de Servicios - Sistema Taller</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
+    <body class="container py-4">
+
+        <h1 class="mb-4">Catálogo de Servicios del Taller</h1>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">Servicios Disponibles</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripción (Tipo de Servicio)</th>
+                                <th>Costo de Mano de Obra</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(servicios)}">
+                                <td colspan="3" class="text-center text-muted">No hay servicios registrados para mostrar.</td>
+                            </tr>
+                            <tr th:each="s : ${servicios}">
+                                <td th:text="${s.idServicios}"></td>
+                                <td th:text="${s.tipoServicio}"></td>
+                                <td th:text="${s.valorServicio}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>

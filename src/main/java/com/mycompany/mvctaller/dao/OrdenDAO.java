@@ -1,7 +1,6 @@
 package com.mycompany.mvctaller.dao;
 
 import com.mycompany.mvctaller.config.Conexion;
-import com.mycompany.mvctaller.modelo.Orden;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
@@ -79,6 +78,7 @@ public class OrdenDAO {
         return false;
     }
 
+
     public boolean registrarServicio(int idOrden, int idServicio) {
         String sqlValor = "SELECT valor_Servicio FROM servicios WHERE id_Servicios = ?";
         String sqlInsert = "INSERT INTO orden_servicios (servicio_estado, id_Servicios, id_Orden, servicio_valor) VALUES ('ASIGNADO', ?, ?, ?)";
@@ -124,7 +124,6 @@ public class OrdenDAO {
 
             con.setAutoCommit(false);
 
-            //Validar stock disponible
             int existenciasActuales = 0;
             try (PreparedStatement psSt = con.prepareStatement(sqlStock)) {
                 psSt.setInt(1, idBodega);
@@ -140,7 +139,6 @@ public class OrdenDAO {
                 throw new SQLException("Stock insuficiente en bodega. Disponible: " + existenciasActuales + ", Requerido: " + cantidad);
             }
 
-            //Insertar detalle repuesto
             try (PreparedStatement psIns = con.prepareStatement(sqlInsertRepuesto)) {
                 psIns.setInt(1, cantidad);
                 psIns.setInt(2, idBodega);
@@ -148,7 +146,6 @@ public class OrdenDAO {
                 psIns.executeUpdate();
             }
 
-            //Descontar del inventario
             try (PreparedStatement psUpd = con.prepareStatement(sqlDescontarStock)) {
                 psUpd.setInt(1, cantidad);
                 psUpd.setInt(2, idBodega);
@@ -170,7 +167,6 @@ public class OrdenDAO {
         return false;
     }
 
-    //Retirar repuesto de orden en Proceso
     public boolean retirarRepuesto(int idDetalleRepuesto) {
         String sqlSelect = "SELECT id_Bodega, repuesto_cantidad, id_Orden FROM orden_repuestos WHERE id_DetalleRepuesto = ?";
         String sqlDelete = "DELETE FROM orden_repuestos WHERE id_DetalleRepuesto = ?";
@@ -224,7 +220,6 @@ public class OrdenDAO {
         return false;
     }
 
-    //Finalizar orden y generar factura
     public boolean finalizarOrden(int idOrden) {
         String sqlCheckServicios = "SELECT COUNT(*) FROM orden_servicios WHERE id_Orden = ?";
         String sqlSumServicios = "SELECT COALESCE(SUM(servicio_valor), 0) FROM orden_servicios WHERE id_Orden = ?";
@@ -238,7 +233,6 @@ public class OrdenDAO {
             con = conexionBD.getConnection();
             if (esInmutable(idOrden, con)) return false;
 
-            //Validar que la orden tenga servicios
             try (PreparedStatement psCheck = con.prepareStatement(sqlCheckServicios)) {
                 psCheck.setInt(1, idOrden);
                 ResultSet rs = psCheck.executeQuery();
@@ -267,14 +261,12 @@ public class OrdenDAO {
 
             BigDecimal costoTotal = totalServicios.add(totalRepuestos);
 
-            //Actualizar Orden a finalizada
             try (PreparedStatement psUpd = con.prepareStatement(sqlUpdateOrden)) {
                 psUpd.setBigDecimal(1, costoTotal);
                 psUpd.setInt(2, idOrden);
                 psUpd.executeUpdate();
             }
 
-            //Generar Factura
             try (PreparedStatement psFact = con.prepareStatement(sqlInsertFactura)) {
                 psFact.setBigDecimal(1, costoTotal);
                 psFact.setInt(2, idOrden);
@@ -296,7 +288,6 @@ public class OrdenDAO {
         return false;
     }
 
-    //Cancelar Orden (Reintegra repuestos en una única transacción)[cite: 3]
     public boolean cancelarOrden(int idOrden) {
         String sqlGetRepuestos = "SELECT id_Bodega, repuesto_cantidad FROM orden_repuestos WHERE id_Orden = ?";
         String sqlRestaurarStock = "UPDATE bodega SET existencias = existencias + ? WHERE id_Bodega = ?";
@@ -309,7 +300,6 @@ public class OrdenDAO {
 
             con.setAutoCommit(false);
 
-            //Devolver todos los repuestos asignados al inventario
             try (PreparedStatement psGet = con.prepareStatement(sqlGetRepuestos);
                  PreparedStatement psRest = con.prepareStatement(sqlRestaurarStock)) {
 
@@ -324,7 +314,6 @@ public class OrdenDAO {
                 psRest.executeBatch();
             }
 
-            //Actualizar estado a cancelada
             try (PreparedStatement psUpd = con.prepareStatement(sqlUpdateOrden)) {
                 psUpd.setInt(1, idOrden);
                 psUpd.executeUpdate();

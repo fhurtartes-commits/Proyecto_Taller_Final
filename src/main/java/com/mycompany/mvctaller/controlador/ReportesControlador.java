@@ -32,10 +32,13 @@ public class ReportesControlador {
         model.addAttribute("estados", reportesPDF.obtenerEstadosDisponibles());
         return "reportes";
     }
-@GetMapping("/reportes")
+
+
+    @GetMapping("/reportes")
     public String inicio(Model model) {
         return vista(model);
     }
+
     @GetMapping("/reportes/ordenes-estado")
     public String ordenesPorEstado(@RequestParam(defaultValue = "TODOS") String estado, Model model) {
         model.addAttribute("estadoSeleccionado", estado);
@@ -49,18 +52,21 @@ public class ReportesControlador {
         }
         return vista(model);
     }
+
     @GetMapping("/reportes/historial-placa")
     public String historialPorPlaca(@RequestParam String noPlaca, Model model) {
         model.addAttribute("lista", reportesPDF.obtenerHistorialPorPlaca(noPlaca));
         model.addAttribute("tipoReporte", "Historial de reparaciones - Placa " + noPlaca);
         return vista(model);
     }
+
     @GetMapping("/reportes/stock-bajo")
     public String stockBajo(@RequestParam(defaultValue = "5") int limite, Model model) {
         model.addAttribute("lista", reportesPDF.obtenerRepuestosStockBajo(limite));
         model.addAttribute("tipoReporte", "Repuestos con existencia menor o igual a " + limite);
         return vista(model);
     }
+
     @GetMapping("/reportes/ordenes-mecanico")
     public String ordenesPorMecanico(@RequestParam int idMecanico,
                                      @RequestParam(defaultValue = "TODOS") String estado,

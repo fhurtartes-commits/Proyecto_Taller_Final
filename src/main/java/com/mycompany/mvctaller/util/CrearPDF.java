@@ -34,7 +34,7 @@ public class CrearPDF {
     private static final Font F_PIE = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Font.BOLD, BaseColor.BLACK);
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
+    
     public byte[] generarTabla(String titulo, List<Map<String, Object>> filas, String pie) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Document doc = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
@@ -57,6 +57,7 @@ public class CrearPDF {
 
         return out.toByteArray();
     }
+
     public byte[] generarSecciones(String titulo, Map<String, List<Map<String, Object>>> grupos) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Document doc = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
@@ -86,7 +87,7 @@ public class CrearPDF {
 
         return out.toByteArray();
     }
-
+  
     private void agregarEncabezado(Document doc, String titulo) throws DocumentException {
         doc.add(new Paragraph(titulo, F_TITULO));
         Paragraph sub = new Paragraph("Sistema Taller Mecánico - Generado: " + LocalDateTime.now().format(FORMATO_FECHA), F_SUBTITULO);
