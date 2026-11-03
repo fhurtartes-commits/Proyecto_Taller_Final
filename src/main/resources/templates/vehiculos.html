@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Gestión de Vehículos - Sistema Taller</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
+    <body class="container py-4">
+
+        <h1 class="mb-4">Gestión de Vehículos</h1>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+        <div th:if="${exito}" class="alert alert-success" role="alert" th:text="${exito}"></div>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Registrar Nuevo Vehículo</div>
+            <div class="card-body">
+                <form th:action="@{/vehiculos/guardar}" th:object="${vehiculo}" method="post" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">No. Placa</label>
+                        <input type="text" th:field="*{noPlaca}" class="form-control" required maxlength="20" placeholder="Ej. P-123ABC">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Marca</label>
+                        <input type="text" th:field="*{marca}" class="form-control" required maxlength="45" placeholder="Ej. Toyota">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Modelo</label>
+                        <input type="text" th:field="*{modelo}" class="form-control" required maxlength="45" placeholder="Ej. Corolla">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Color</label>
+                        <input type="text" th:field="*{color}" class="form-control" maxlength="45" placeholder="Ej. Rojo">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">ID Cliente Propietario</label>
+                        <input type="number" th:field="*{idCliente}" class="form-control" required min="1" placeholder="Ej. 1">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Modificar Vehículo</div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">Usa el botón "Editar" de la tabla para cargar los datos aquí, o escribe la placa manualmente.</p>
+                <form th:action="@{/vehiculos/actualizar}" method="post" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">No. Placa (Identificador)</label>
+                        <input type="text" id="modNoPlaca" name="noPlaca" class="form-control" required maxlength="20">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Marca</label>
+                        <input type="text" id="modMarca" name="marca" class="form-control" required maxlength="45">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Modelo</label>
+                        <input type="text" id="modModelo" name="modelo" class="form-control" required maxlength="45">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Color</label>
+                        <input type="text" id="modColor" name="color" class="form-control" maxlength="45">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">ID Cliente Propietario</label>
+                        <input type="number" id="modIdCliente" name="idCliente" class="form-control" required min="1">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-warning w-100">Modificar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Vehículos Registrados</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>No. Placa</th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Color</th>
+                                <th>ID Cliente</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(vehiculos)}">
+                                <td colspan="6" class="text-center text-muted">No hay vehículos registrados para mostrar.</td>
+                            </tr>
+                            <tr th:each="v : ${vehiculos}">
+                                <td th:text="${v.noPlaca}"></td>
+                                <td th:text="${v.marca}"></td>
+                                <td th:text="${v.modelo}"></td>
+                                <td th:text="${v.color}"></td>
+                                <td th:text="${v.idCliente}"></td>
+                                <td class="text-end">
+                                    <a th:href="@{/vehiculos/historial/{id}(id=${v.noPlaca})}" class="btn btn-sm btn-outline-info">Historial Órdenes</a>
+                                    <button type="button" class="btn btn-sm btn-outline-warning"
+                                            th:attr="data-placa=${v.noPlaca},data-marca=${v.marca},data-modelo=${v.modelo},data-color=${v.color},data-cliente=${v.idCliente}"
+                                            onclick="cargarParaEditar(this)">Editar</button>
+                                    <a th:href="@{/vehiculos/eliminar/{id}(id=${v.noPlaca})}" class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('¿Estás seguro de eliminar este vehículo?');">Eliminar</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function cargarParaEditar(btn) {
+                document.getElementById('modNoPlaca').value = btn.dataset.placa;
+                document.getElementById('modMarca').value = btn.dataset.marca || '';
+                document.getElementById('modModelo').value = btn.dataset.modelo || '';
+                document.getElementById('modColor').value = btn.dataset.color || '';
+                document.getElementById('modIdCliente').value = btn.dataset.cliente || '';
+                document.getElementById('modMarca').focus();
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>

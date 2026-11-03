@@ -15,11 +15,21 @@ public class Conexion {
     private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?useSSL=true&serverTimezone=UTC";
     
     public static Connection IniciarConexion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return iniciarConexion();
     }
 
     public static Connection iniciarConexion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("¡Conexión exitosa a la base de datos bd_taller en la nube!");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: No se encontró el driver JDBC. " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error al conectar con la base de datos: " + e.getMessage());
+        }
+        return con;
     }
     
     private Connection con = null;

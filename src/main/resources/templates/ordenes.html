@@ -1,182 +1,142 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Módulo de Reportes - Sistema Taller</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
-    <!-- Barra de Navegación Principal -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-tools me-2"></i>Sistema Taller Mecánico
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold" th:href="@{/ordenes}">
-                            <i class="bi bi-file-earmark-text me-1"></i>Gestión de Órdenes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active fw-semibold" th:href="@{/reportes}">
-                            <i class="bi bi-graph-up-arrow me-1"></i>Módulo de Reportes
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container pb-5">
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Gestión de Órdenes - Sistema Taller</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
+    <body class="container py-4">
         
-        <!-- Encabezado de Página -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold text-dark mb-0">Módulo de Reportes y Consultas</h2>
-                <p class="text-muted small mb-0">Genera y visualiza informes detallados de órdenes, stock e ingresos.</p>
+        <h1 class="mb-4">Gestión de Órdenes del Taller</h1>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+        <div th:if="${mensaje}" class="alert alert-success" role="alert" th:text="${mensaje}"></div>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Crear Nueva Orden</div>
+            <div class="card-body">
+                <form th:action="@{/ordenes/crear}" method="post" class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">No. Placa</label>
+                        <input type="text" name="noPlaca" class="form-control" required placeholder="Ej. P-123XYZ">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">ID Mecánico</label>
+                        <input type="number" name="idMecanico" class="form-control" required placeholder="Ej. 1">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100">Crear Orden</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <!-- Alertas de Feedback -->
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Registrar Servicio a Orden</div>
+            <div class="card-body">
+                <form th:action="@{/ordenes/registrar-servicio}" method="post" class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">ID Orden</label>
+                        <input type="number" name="idOrden" class="form-control" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">ID Servicio</label>
+                        <input type="number" name="idServicio" class="form-control" required>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100">Asignar Servicio</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- SECCIÓN DE FORMULARIOS DE CONSULTA -->
-        <div class="row g-4 mb-4">
-            
-            <!-- 1. Órdenes por Estado -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-primary text-white fw-bold py-3">
-                        <i class="bi bi-funnel me-2"></i>1. Órdenes por Estado
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Asignar Repuesto (Bodega)</div>
+            <div class="card-body">
+                <form th:action="@{/ordenes/asignar-repuesto}" method="post" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">ID Orden</label>
+                        <input type="number" name="idOrden" class="form-control" required>
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label">ID Bodega / Repuesto</label>
+                        <input type="number" name="idBodega" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" name="cantidad" class="form-control" required value="1">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100">Asignar Repuesto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Retirar Repuesto (Devolver a Bodega)</div>
+            <div class="card-body">
+                <form id="formRetirarRepuesto" onsubmit="this.action='/ordenes/retirar-repuesto/' + document.getElementById('idDetalleInput').value;" method="post" class="row g-3">
+                    <div class="col-md-10">
+                        <label class="form-label">ID Detalle de Repuesto</label>
+                        <input type="number" id="idDetalleInput" class="form-control" required placeholder="Ej. 1">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-danger w-100">Retirar Repuesto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">Iniciar Reparación</div>
                     <div class="card-body">
-                        <form th:action="@{/reportes/ordenes-estado}" method="get" class="d-flex flex-column h-100 justify-content-between">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Estado de la Orden</label>
-                                <select name="estado" class="form-select" required>
-                                    <option value="PENDIENTE">PENDIENTE</option>
-                                    <option value="EN_PROCESO">EN PROCESO</option>
-                                    <option value="FINALIZADO">FINALIZADO</option>
-                                    <option value="CANCELADO">CANCELADO</option>
-                                </select>
+                        <form id="formIniciar" onsubmit="this.action='/ordenes/iniciar/' + document.getElementById('idIniciarInput').value;" method="post" class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">ID Orden</label>
+                                <input type="number" id="idIniciarInput" class="form-control" required placeholder="Ej. 1">
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 fw-semibold">
-                                <i class="bi bi-search me-1"></i>Consultar
-                            </button>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-outline-primary w-100">Iniciar Orden</button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Historial por Placa -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-secondary text-white fw-bold py-3">
-                        <i class="bi bi-car-front me-2"></i>2. Historial por Placa
-                    </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">Finalizar Orden</div>
                     <div class="card-body">
-                        <form th:action="@{/reportes/historial-placa}" method="get" class="d-flex flex-column h-100 justify-content-between">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Número de Placa</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                    <input type="text" name="noPlaca" class="form-control" placeholder="Ej. P123ABC" required>
-                                </div>
+                        <form id="formFinalizar" onsubmit="this.action='/ordenes/finalizar/' + document.getElementById('idFinalizarInput').value;" method="post" class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">ID Orden</label>
+                                <input type="number" id="idFinalizarInput" class="form-control" required placeholder="Ej. 1">
                             </div>
-                            <button type="submit" class="btn btn-secondary w-100 fw-semibold">
-                                <i class="bi bi-search me-1"></i>Consultar
-                            </button>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-outline-success w-100">Finalizar Orden</button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. Stock Bajo -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-warning text-dark fw-bold py-3">
-                        <i class="bi bi-exclamation-triangle me-2"></i>3. Repuestos Stock Bajo
-                    </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">Cancelar Orden</div>
                     <div class="card-body">
-                        <form th:action="@{/reportes/stock-bajo}" method="get" class="d-flex flex-column h-100 justify-content-between">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Límite de Existencias</label>
-                                <input type="number" name="limite" class="form-control" value="5" min="1" required>
+                        <form id="formCancelar" onsubmit="this.action='/ordenes/cancelar/' + document.getElementById('idCancelarInput').value;" method="post" class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">ID Orden</label>
+                                <input type="number" id="idCancelarInput" class="form-control" required placeholder="Ej. 1">
                             </div>
-                            <button type="submit" class="btn btn-warning text-dark w-100 fw-semibold">
-                                <i class="bi bi-search me-1"></i>Consultar Stock
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. Órdenes por Mecánico y Estado -->
-            <div class="col-md-6 col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-info text-dark fw-bold py-3">
-                        <i class="bi bi-person-badge me-2"></i>4. Órdenes por Mecánico y Estado
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/reportes/ordenes-mecanico}" method="get">
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">ID Mecánico</label>
-                                    <input type="number" name="idMecanico" class="form-control" required placeholder="Ej. 1">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Estado</label>
-                                    <select name="estado" class="form-select" required>
-                                        <option value="PENDIENTE">PENDIENTE</option>
-                                        <option value="EN_PROCESO">EN PROCESO</option>
-                                        <option value="FINALIZADO">FINALIZADO</option>
-                                        <option value="CANCELADO">CANCELADO</option>
-                                    </select>
-                                </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-outline-danger w-100">Cancelar Orden</button>
                             </div>
-                            <button type="submit" class="btn btn-info text-dark w-100 fw-semibold">
-                                <i class="bi bi-search me-1"></i>Consultar Mecánico
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. Ingresos por Rango de Fechas -->
-            <div class="col-md-12 col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-success text-white fw-bold py-3">
-                        <i class="bi bi-calendar-range me-2"></i>5. Ingresos por Fechas
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/reportes/ingresos-fechas}" method="get">
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Fecha Inicio</label>
-                                    <input type="date" name="fechaInicio" class="form-control" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Fecha Fin</label>
-                                    <input type="date" name="fechaFin" class="form-control" required>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100 fw-semibold">
-                                <i class="bi bi-cash-stack me-1"></i>Consultar Ingresos
-                            </button>
                         </form>
                     </div>
                 </div>
@@ -184,42 +144,6 @@
 
         </div>
 
-        <!-- SECCIÓN DE RESULTADOS (TABLA DINÁMICA) -->
-        <div th:if="${lista != null}" class="card border-0 shadow-sm mt-5">
-            <div class="card-header bg-dark text-white fw-bold py-3 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-table me-2"></i>Resultado: <span class="text-warning" th:text="${tipoReporte}"></span>
-                </span>
-                <span class="badge bg-secondary" th:text="${#lists.size(lista)} + ' registros'"></span>
-            </div>
-            <div class="card-body p-0">
-
-                <div th:if="${#lists.isEmpty(lista)}" class="p-4 text-center text-muted">
-                    <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
-                    No se encontraron registros para la consulta realizada.
-                </div>
-
-                <div th:if="${!#lists.isEmpty(lista)}" class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th th:each="key : ${lista[0].keySet()}" th:text="${key}" class="text-uppercase small fw-bold text-muted">Columna</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="fila : ${lista}">
-                                <td th:each="key : ${lista[0].keySet()}" th:text="${fila.get(key)}">Dato</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
 </html>

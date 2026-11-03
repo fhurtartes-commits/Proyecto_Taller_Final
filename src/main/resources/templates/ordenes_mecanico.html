@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Órdenes del Mecánico - Sistema Taller</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
+    <body class="container py-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>Órdenes Asignadas al Mecánico</h1>
+                <p class="text-muted mb-0" th:if="${mecanico != null}">
+                    Mecánico: <strong th:text="${mecanico.nombre}">Nombre</strong> | 
+                    Especialidad: <span th:text="${mecanico.especialidad}">Especialidad</span>
+                </p>
+            </div>
+            <a th:href="@{/mecanicos}" class="btn btn-secondary">Volver a Mecánicos</a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">Listado de Órdenes Simultáneas</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>ID Orden</th>
+                                <th>Estado</th>
+                                <th>Fecha Entrada</th>
+                                <th>Fecha Salida</th>
+                                <th>No. Placa (Vehículo)</th>
+                                <th class="text-end">Costo Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(ordenesAsignadas)}">
+                                <td colspan="6" class="text-center text-muted">Este mecánico no tiene órdenes asignadas actualmente.</td>
+                            </tr>
+                            <tr th:each="o : ${ordenesAsignadas}">
+                                <td th:text="${o.idOrden}"></td>
+                                <td>
+                                    <span class="badge bg-primary" th:text="${o.estadoOrden}">Estado</span>
+                                </td>
+                                <td th:text="${o.fechaEntrada}"></td>
+                                <td th:text="${o.fechaSalida != null ? o.fechaSalida : 'En proceso'}"></td>
+                                <td th:text="${o.noPlaca}"></td>
+                                <td class="text-end" th:text="${'Q ' + o.costoTotal}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>

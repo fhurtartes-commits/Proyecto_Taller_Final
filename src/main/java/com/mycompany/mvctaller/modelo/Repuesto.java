@@ -2,29 +2,35 @@ package com.mycompany.mvctaller.modelo;
 
 public class Repuesto {
     private int idRepuesto;
+    private String nombre;
     private String descripcion;
     private double precioUnitario;
     private int existencias;
 
-    // Constructor vacío
-    public Repuesto() {
-    }
+    public Repuesto() {}
 
-    // Constructor con parámetros
-    public Repuesto(int idRepuesto, String descripcion, double precioUnitario, int existencias) {
+    public Repuesto(int idRepuesto, String nombre, String descripcion, double precioUnitario, int existencias) {
         this.idRepuesto = idRepuesto;
+        this.nombre = nombre;
         this.descripcion = descripcion;
-        setPrecioUnitario(precioUnitario);
-        setExistencias(existencias); 
+        this.precioUnitario = (precioUnitario < 0) ? 0.0 : precioUnitario;
+        this.existencias = (existencias < 0) ? 0 : existencias;             
     }
 
-    // Getters y Setters
     public int getIdRepuesto() {
         return idRepuesto;
     }
 
     public void setIdRepuesto(int idRepuesto) {
         this.idRepuesto = idRepuesto;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getDescripcion() {
@@ -40,12 +46,7 @@ public class Repuesto {
     }
 
     public void setPrecioUnitario(double precioUnitario) {
-        // Evita precios negativos
-        if (precioUnitario < 0) {
-            this.precioUnitario = 0.0;
-        } else {
-            this.precioUnitario = precioUnitario;
-        }
+        this.precioUnitario = (precioUnitario < 0) ? 0.0 : precioUnitario;
     }
 
     public int getExistencias() {
@@ -53,11 +54,6 @@ public class Repuesto {
     }
 
     public void setExistencias(int existencias) {
-        // Validación corregida: si es menor a 0 se asigna 0, de lo contrario guarda el valor correcto
-        if (existencias < 0) {
-            this.existencias = 0; 
-        } else {
-            this.existencias = existencias;
-        }
+        this.existencias = (existencias < 0) ? 0 : existencias;
     }
 }

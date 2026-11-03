@@ -32,7 +32,7 @@ public class Mecanico {
         this.nombre = nombre;
     }
 
-    public String getEspecilidad() {
+    public String getEspecialidad() {
         return especialidad;
     }
 
